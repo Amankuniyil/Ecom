@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function updateFormAction(form, id1, id2) {
+            // Ensure both IDs are integers for comparison
+            const idA = parseInt(id1, 10);
+            const idB = parseInt(id2, 10);
+
+            // Determine the smaller and larger ID
+            const smallerId = Math.min(idA, idB);
+            const largerId = Math.max(idA, idB);
+
+            // Create the new action URL
+            const newAction = `{% url 'message' 'dummy' %}${smallerId}-${largerId}`;
+
+            // Update the form's action attribute
+            form.action = newAction;
+        }
+
+        function handleFormSubmit(event) {
+            // Prevent the form from submitting immediately
+            event.preventDefault();
+
+            // Get the form element
+            const form = event.target;
+
+            // Extract IDs from data attributes
+            const id1 = form.getAttribute('data-id1');
+            const id2 = form.getAttribute('data-id2');
+
+            // Update the form action with the new URL
+            updateFormAction(form, id1, id2);
+
+            // Submit the form
+            form.submit();
+        }
+    </script>
+</head>
+<body>
+    <h1>Users {{user.id}}</h1>
+    
+    <ul>
+        {% for i in users %}
+        <li>
+            {{ i.first_name }}
+            <form method="post" onsubmit="handleFormSubmit(event)" data-id1="{{ i.id }}" data-id2="{{ user.id }}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
