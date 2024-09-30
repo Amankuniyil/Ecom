@@ -59,3 +59,16 @@ def message(request,chatroom_name):
 
 
     return render(request, 'message.html', {'messages':message,'form': form})
+
+
+# myapp/signals.py
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.contrib.auth.models import User
+
+@receiver(post_save, sender=User)
+def user_created(sender, instance, created, **kwargs):
+    if created:
+        # Signal logic here
+        print(f"New user created: {instance.username}")
+        # You can also send an email, or call an external API, etc.
